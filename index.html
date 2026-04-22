@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neighborhood Notebook</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Manrope:wght@500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles/base.css" />
+    <link rel="stylesheet" href="styles/neighborhood-notebook.css" />
+  </head>
+  <body class="notebook-page">
+    <main class="notebook-shell">
+      <header class="notebook-hero">
+        <div>
+          <a class="page-back" href="https://github.com/atishaycn">Back to all concepts</a>
+          <span class="eyebrow">Concept 02 · Neighborhood notebook</span>
+          <h1>Neighborhood Notebook</h1>
+          <p>
+            A warmer browse for parents who want to discover what is happening nearby without
+            feeling like they are sorting through a dense ticketing site.
+          </p>
+        </div>
+        <aside class="hero-note">
+          <span class="eyebrow">Helpful filters</span>
+          <div class="chip-stack" id="neighborhoodChips"></div>
+          <div class="age-row">
+            <span>Best for ages 2-5</span>
+            <span>Drop-ins and free picks</span>
+            <span>Weekend plans</span>
+          </div>
+        </aside>
+      </header>
+
+      <section class="notebook-board">
+        <div class="section-label">
+          <span class="eyebrow">This week near you</span>
+          <h2>Community pages</h2>
+        </div>
+        <div class="neighborhood-columns" id="neighborhoodColumns"></div>
+      </section>
+    </main>
+
+    <script src="data/events.js"></script>
+    <script>
+      const events = window.kidsEvents.events;
+      const neighborhoods = window.kidsEvents.neighborhoods.filter((name) => name !== "All nearby");
+
+      document.getElementById("neighborhoodChips").innerHTML = neighborhoods
+        .map((item) => `<span>${item}</span>`)
+        .join("");
+
+      const grouped = neighborhoods
+        .map((name) => ({
+          name,
+          items: events.filter((event) => event.neighborhood === name).slice(0, 2),
+        }))
+        .filter((group) => group.items.length);
+
+      document.getElementById("neighborhoodColumns").innerHTML = grouped
+        .map(
+          (group) => `
+            <section class="note-column">
+              <header>
+                <span class="eyebrow">${group.items.length} picks</span>
+                <h3>${group.name}</h3>
+              </header>
+              ${group.items
+                .map(
+                  (event) => `
+                    <article class="note-card">
+                      <span class="note-tag">${event.category}</span>
+                      <h4>${event.title}</h4>
+                      <p>${event.note}</p>
+                      <dl>
+                        <div><dt>When</dt><dd>${event.date} · ${event.time}</dd></div>
+                        <div><dt>Age</dt><dd>${event.ageRange}</dd></div>
+                        <div><dt>Cost</dt><dd>${event.price}</dd></div>
+                        <div><dt>Spots</dt><dd>${event.spots}</dd></div>
+                      </dl>
+                    </article>
+                  `
+                )
+                .join("")}
+            </section>
+          `
+        )
+        .join("");
+    </script>
+  </body>
+</html>
